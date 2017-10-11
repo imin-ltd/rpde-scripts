@@ -19,9 +19,8 @@ do
   page_padded=$(printf '%0*d\n' ${#max} $page)
   set -- $(curl -L -sS "$1" | jq '.' | tee rpde-$page_padded.json | jq -r '.next, (.items | length)')
   printf 'got page with next url: %s, num items: %s\n' "$1" $2
-  if [ "${1%${1/?}}"x = '/x' ]
-  then
+  case $1 in /*)
     set -- $base$1 $2
-  fi
+  esac
   page=$((page=page+1))
 done
