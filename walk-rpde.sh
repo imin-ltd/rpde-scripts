@@ -2,12 +2,13 @@
 
 # required commands: awk, curl, jq, tee
 
-if [ "$#" -ne "1" ]
+if [ "$#" -lt "1" -o "$#" -gt "2" ]
 then
-  printf 'Usage: %s <rpde-endpoint>\n' "$0"
+  printf 'Usage: %s <rpde-endpoint> [-s]\n' "$0"
   exit 1
 fi
 
+single_file=$2
 max=100
 page=1
 base=$(printf '%s' "$1" | awk -F/ '{print $1 "//" $3}')
@@ -24,3 +25,9 @@ do
   esac
   page=$((page=page+1))
 done
+
+if [ "$single_file" != "" ]
+then
+  jq -s '[.[].items[]]' rpde-*.json > rpde.json
+  rm -rf rpde-*.json
+fi
