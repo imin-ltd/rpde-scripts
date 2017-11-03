@@ -18,7 +18,7 @@ set -- $1 -1
 while [ "$2" -ne "0" ]
 do
   page_padded=$(printf '%0*d\n' ${#max} $page)
-  set -- $(curl -L -sS "$1" | jq '.' | tee rpde-$page_padded.json | jq -r '.next, (.items | length)')
+  set -- $(curl -L -sS "$1" | jq '.' | tee rpde-walk-$page_padded.json | jq -r '.next, (.items | length)')
   printf 'got page with next url: %s, num items: %s\n' "$1" $2
   case $1 in /*)
     set -- $base$1 $2
@@ -28,6 +28,6 @@ done
 
 if [ "$single_file" != "" ]
 then
-  jq -s '[.[].items[]]' rpde-*.json > rpde.json
-  rm -rf rpde-*.json
+  jq -s '[.[].items[]]' rpde-walk-*.json > rpde-walk.json
+  rm -rf rpde-walk-*.json
 fi
