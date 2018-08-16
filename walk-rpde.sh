@@ -3,6 +3,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+# Uncomment the following line in order to debug
 # set -o xtrace
 
 # required commands: awk, curl, jq, tee
@@ -10,6 +11,8 @@ set -o pipefail
 if [ "$#" -lt "1" -o "$#" -gt "2" ]
 then
   printf 'Usage: %s <rpde-endpoint> [-s]\n' "$0"
+  printf '\n'
+  printf ' -s  Squashes all pages into a single page, "rpde.json"\n'
   exit 1
 fi
 
@@ -22,11 +25,15 @@ last_next_url=
 next_url="$1"
 num_items=-1
 
+# Stop paging if the "next" url is the same as in the last page. This is the end of the feed as defined by RPDE
 while [ "${next_url}" != "${last_next_url}" ]
 do
   page_padded=$(printf '%0*d\n' ${#max} ${page})
+  last_next_url="${next_url}"
+  # Results of $() statement are stored in next_url & num_items
   read -r next_url num_items <<< $(curl -L -sS "${next_url}" | jq '.' | tee "rpde-${page_padded}.json" | jq -r '.next, (.items | length)')
   printf 'got page: %s, with next url: %s, num items: %s\n' "${page}" "${next_url}" "${num_items}"
+  # If "next" URL isn't an absolute URL, like /rpde?afterTimestamp=123&afterId=abc, prepend the base URL to it to create an absolute URL
   case ${next_url} in /*)
     next_url="${base}${next_url}"
   esac
