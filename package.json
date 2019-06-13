@@ -1,0 +1,25 @@
+{
+  "name": "rpde-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "walkRpde.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imin-ltd/rpde-scripts.git"
+  },
+  "author": "Civaram Sivakumaran, Luke Winship, Sam House",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/imin-ltd/rpde-scripts/issues"
+  },
+  "homepage": "https://github.com/imin-ltd/rpde-scripts#readme",
+  "dependencies": {
+    "axios": "^0.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.8"
+  }
+}
