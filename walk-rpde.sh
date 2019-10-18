@@ -26,7 +26,7 @@ next_url="$1"
 prefix="$2"
 num_items=-1
 
-echo "Filenames" > index.csv
+echo "Filenames" > ${prefix}index.csv
 
 # Stop paging if the "next" url is the same as in the last page. This is the end of the feed as defined by RPDE
 while [ "${next_url}" != "${last_next_url}" ]
@@ -35,7 +35,7 @@ do
   last_next_url="${next_url}"
   # Results of $() statement are stored in next_url & num_items
   read -r next_url num_items <<< $(curl -L -sS "${next_url}" | jq '.' | tee "${prefix}rpde-${page_padded}.json" | jq -r '.next, (.items | length)')
-  echo "${prefix}rpde-${page_padded}.json" >> index.csv
+  echo "${prefix}rpde-${page_padded}.json" >> ${prefix}index.csv
   printf 'got page: %s, with next url: %s, num items: %s\n' "${page}" "${next_url}" "${num_items}"
   # If "next" URL isn't an absolute URL, like /rpde?afterTimestamp=123&afterId=abc, prepend the base URL to it to create an absolute URL
   case ${next_url} in /*)
@@ -48,5 +48,5 @@ if [ "${single_file}" == "-s" ]
 then
   jq -s '[.[].items[]]' ${prefix}rpde-*.json > ${prefix}rpde.json
   rm -rf ${prefix}rpde-*.json
-  rm index.csv
+  rm ${prefix}index.csv
 fi
