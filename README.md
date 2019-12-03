@@ -1,8 +1,14 @@
 # rpde-scripts
 
+## Set-up
+
+```sh
+npm install
+```
+
 ## Running
 
-```
+```sh
 export START_URL=<e.g. https://opensessions.io/api/rpde/session-series>
 export END_URL=<e.g. http://opensessions.io/API/rpde/session-series?afterTimestamp=1537456685&afterId=2566> # Optional. If omitted, the script will just walk the RPDE feed to the very end
 node walkRpde.js
