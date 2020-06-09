@@ -32,6 +32,27 @@ _How many items in the feed have state: 'updated'_:
 cat rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")] | length'
 ```
 
+## Running a performance test
+
+You can get performance stats about an RPDE feed with `perfTestRpde.js`. Its interface is the same as `walkRpde.js`. e.g.:
+
+```sh
+export START_URL=<e.g. https://opensessions.io/api/rpde/session-series>
+export END_URL=<e.g. http://opensessions.io/API/rpde/session-series?afterTimestamp=1537456685&afterId=2566> # Optional. If omitted, the script will just walk the RPDE feed to the very end
+node perfTestRpde.js
+```
+
+This will not download the pages, but will instead walk to the end of the feed and then output stats about request times and total time taken. An example output:
+
+```
+Performance stats:
+
+- Total time taken: 105711.00003899634
+- Average request time: 600.5119533183223
+- p90: 657.3589110001922
+- p95: 808.9024389982224
+- p99: 986.9369449988008
+```
 
 ## License
 

@@ -2,20 +2,9 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const { default: axios } = require('axios');
+const { doContinueIterating } = require('./utils/doContinueIterating');
 
 const writeFile = util.promisify(fs.writeFile);
-
-function doContinueIterating({ nextUrl, prevNextUrl, endUrl }) {
-  if (endUrl && endUrl === nextUrl) {
-    console.log(`TERMINATING as endUrl reached: ${endUrl}`);
-    return false;
-  }
-  if (nextUrl === prevNextUrl) {
-    console.log(`TERMINATING as end of feed reached: ${nextUrl}`);
-    return false;
-  }
-  return true;
-}
 
 /**
  * @param {string} startUrl
