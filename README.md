@@ -32,6 +32,12 @@ _How many items in the feed have state: 'updated'_:
 cat rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")] | length'
 ```
 
+_Latest `startDate` for items in this ScheduledSession/Slot feed_:
+
+```sh
+cat rpde-*.json | jq --slurp '[.[].items[].data.startDate] | max'
+```
+
 ## Running a performance test
 
 You can get performance stats about an RPDE feed with `perfTestRpde.js`. Its interface is the same as `walkRpde.js`. e.g.:
