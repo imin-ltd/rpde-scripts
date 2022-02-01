@@ -38,6 +38,13 @@ _Latest `startDate` for items in this ScheduledSession/Slot feed_:
 cat rpde-*.json | jq --slurp '[.[].items[].data.startDate] | max'
 ```
 
+_Get item with ID X_
+
+
+```sh
+cat rpde-*.json | jq -s '[.[].items[] | select(.data["@id"] == "X")]'
+```
+
 ## Running a performance test
 
 You can get performance stats about an RPDE feed with `perfTestRpde.js`. Its interface is the same as `walkRpde.js`. e.g.:
