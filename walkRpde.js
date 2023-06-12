@@ -10,14 +10,29 @@ const writeFile = util.promisify(fs.writeFile);
  * @param {string} startUrl
  * @param {object} options
  * @param {string} [options.endUrl]
+ * @param {number} [options.maxPages]
+ * @param {number} [options.baseDir]
+ * @param {string} [options.apiKey]
  */
 async function walkRpde(startUrl, options) {
   let prevNextUrl;
   let nextUrl = startUrl;
   let page = 0;
-  while (doContinueIterating({ nextUrl, prevNextUrl, endUrl: options.endUrl })) {
-    const { data: pageJson } = await axios.get(nextUrl);
-    const filePath = path.join(__dirname, `rpde-${page}.json`);
+  while (doContinueIterating({
+    nextUrl,
+    prevNextUrl,
+    endUrl: options.endUrl,
+    maxPages: options.maxPages,
+    page,
+  })) {
+    const { data: pageJson } = await axios.get(nextUrl, {
+      headers: {
+        ...(options.apiKey ? { 'X-Api-Key': options.apiKey } : {}),
+      },
+    });
+    const filePath = options.baseDir
+      ? path.join(__dirname, options.baseDir, `rpde-${page}.json`)
+      : path.join(__dirname, `rpde-${page}.json`);
     await writeFile(filePath, JSON.stringify(pageJson, null, 2));
     prevNextUrl = nextUrl;
     nextUrl = pageJson.next;
@@ -32,6 +47,11 @@ if (require.main === module) {
     console.log('Usage: START_URL=<e.g. https://opensessions.io/api/rpde/session-series> [END_URL=<e.g. http://opensessions.io/API/rpde/session-series?afterTimestamp=1537456685&afterId=2566>] node walkRpde.js');
     process.exit(1);
   } else {
-    walkRpde(process.env.START_URL, { endUrl: process.env.END_URL });
+    walkRpde(process.env.START_URL, {
+      endUrl: process.env.END_URL,
+      maxPages: process.env.MAX_PAGES ?? Infinity,
+      baseDir: process.env.BASE_DIR,
+      apiKey: process.env.API_KEY,
+    });
   }
 }
