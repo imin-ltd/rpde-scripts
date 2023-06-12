@@ -60,7 +60,7 @@ cat rpde-*.json | jq -s '[.[].items[] | select(.data["@id"] == "X")]'
 _Get the first item with state=updated_
 
 ```sh
-cat slots/rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")][0]'
+cat rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")][0]'
 ```
 
 ## Running a performance test
