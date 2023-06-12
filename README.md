@@ -63,6 +63,12 @@ _Get the first item with state=updated_
 cat rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")][0]'
 ```
 
+_Get the first 10 items with state=updated_
+
+```sh
+cat rpde-*.json | jq -s '[.[].items[] | select(.state == "updated")][0:10]'
+```
+
 ## Running a performance test
 
 You can get performance stats about an RPDE feed with `perfTestRpde.js`. Its interface is the same as `walkRpde.js`. e.g.:
