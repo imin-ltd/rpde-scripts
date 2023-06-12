@@ -19,7 +19,7 @@ function doContinueIterating({ nextUrl, prevNextUrl, endUrl, maxPages, page }) {
     return false;
   }
   if (page >= maxPages) {
-    console.log.log(`TERMINATING as maxPages reached: ${maxPages}`);
+    console.log(`TERMINATING as maxPages reached: ${maxPages}`);
     return false;
   }
   return true;

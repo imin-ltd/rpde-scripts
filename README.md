@@ -24,6 +24,18 @@ cat rpde-*.json | jq --slurp '[.[].items[]] | length'
 
 Which will return how many total items there are
 
+### Options
+
+Options are set using environment variables. They are:
+
+- `START_URL` - (REQUIRED) The URL to start walking the RPDE feed from
+- `END_URL` - (OPTIONAL) The URL to stop walking the RPDE feed at. If omitted, the script will walk to the very end of the feed
+- `MAX_PAGES` - (OPTIONAL) The maximum number of pages to walk. If omitted, the script will walk to the very end of the feed
+  - e.g. `export MAX_PAGES=10`
+- `API_KEY` - (OPTIONAL) API key used to make RPDE requests. It will be set as the `X-Api-Key` HTTP header
+- `REL_OUTPUT_DIR` - (OPTIONAL) Relative Output Directory. If included, RPDE feed pages will be outputted to this directory. This directory is relative to the current working directory.
+  - e.g. `export REL_OUTPUT_DIR=slots` will output to `./slots/rpde-1.json`, `./slots/rpde-2.json`, etc
+
 #### Some other example queries:
 
 _How many items in the feed have state: 'updated'_:

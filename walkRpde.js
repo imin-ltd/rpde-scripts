@@ -11,7 +11,7 @@ const writeFile = util.promisify(fs.writeFile);
  * @param {object} options
  * @param {string} [options.endUrl]
  * @param {number} [options.maxPages]
- * @param {number} [options.baseDir]
+ * @param {number} [options.relOutputDir]
  * @param {string} [options.apiKey]
  */
 async function walkRpde(startUrl, options) {
@@ -30,8 +30,8 @@ async function walkRpde(startUrl, options) {
         ...(options.apiKey ? { 'X-Api-Key': options.apiKey } : {}),
       },
     });
-    const filePath = options.baseDir
-      ? path.join(__dirname, options.baseDir, `rpde-${page}.json`)
+    const filePath = options.relOutputDir
+      ? path.join(__dirname, options.relOutputDir, `rpde-${page}.json`)
       : path.join(__dirname, `rpde-${page}.json`);
     await writeFile(filePath, JSON.stringify(pageJson, null, 2));
     prevNextUrl = nextUrl;
@@ -49,8 +49,8 @@ if (require.main === module) {
   } else {
     walkRpde(process.env.START_URL, {
       endUrl: process.env.END_URL,
-      maxPages: process.env.MAX_PAGES ?? Infinity,
-      baseDir: process.env.BASE_DIR,
+      maxPages: process.env.MAX_PAGES ? Number(process.env.MAX_PAGES) : Infinity,
+      relOutputDir: process.env.REL_OUTPUT_DIR,
       apiKey: process.env.API_KEY,
     });
   }
