@@ -13,6 +13,7 @@ const writeFile = util.promisify(fs.writeFile);
  * @param {number} [options.maxPages]
  * @param {number} [options.relOutputDir]
  * @param {string} [options.apiKey]
+ * @param {string} [options.bearerToken]
  */
 async function walkRpde(startUrl, options) {
   let prevNextUrl;
@@ -28,6 +29,7 @@ async function walkRpde(startUrl, options) {
     const { data: pageJson } = await axios.get(nextUrl, {
       headers: {
         ...(options.apiKey ? { 'X-Api-Key': options.apiKey } : {}),
+        ...(options.bearerToken ? { Authorization: `Bearer ${options.bearerToken}` } : {}),
       },
     });
     const filePath = options.relOutputDir
@@ -47,11 +49,16 @@ if (require.main === module) {
     console.log('Usage: START_URL=<e.g. https://opensessions.io/api/rpde/session-series> [END_URL=<e.g. http://opensessions.io/API/rpde/session-series?afterTimestamp=1537456685&afterId=2566>] node walkRpde.js');
     process.exit(1);
   } else {
+    if (process.env.REL_OUTPUT_DIR) {
+      // Make REL_OUTPUT_DIR if it doesn't exist
+      fs.mkdirSync(path.join(__dirname, process.env.REL_OUTPUT_DIR), { recursive: true });
+    }
     walkRpde(process.env.START_URL, {
       endUrl: process.env.END_URL,
       maxPages: process.env.MAX_PAGES ? Number(process.env.MAX_PAGES) : Infinity,
       relOutputDir: process.env.REL_OUTPUT_DIR,
       apiKey: process.env.API_KEY,
+      bearerToken: process.env.BEARER_TOKEN,
     });
   }
 }
