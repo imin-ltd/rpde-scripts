@@ -15,8 +15,12 @@ const fileNameRegex = /rpde-(\d+)\.json$/;
  * @param {string} postgresPassword
  * @param {string} postgresHost
  * @param {string} postgresDatabase
+ * @param {object} options
+ * @param {boolean} options.clearExisting
  */
-async function uploadToDb(dirPath, postgresUser, postgresPassword, postgresHost, postgresDatabase) {
+async function uploadToDb(dirPath, postgresUser, postgresPassword, postgresHost, postgresDatabase, {
+  clearExisting
+}) {
   const pgPool = new Pool({
     user: postgresUser,
     password: postgresPassword,
@@ -41,8 +45,10 @@ async function uploadToDb(dirPath, postgresUser, postgresPassword, postgresHost,
     await pgPool.query('CREATE INDEX IF NOT EXISTS rpde_items_id_idx ON rpde_items (id)');
     await pgPool.query('CREATE INDEX IF NOT EXISTS rpde_items_modified_idx ON rpde_items (modified)');
     console.log('Created table (if it did not already exist)');
-    await pgPool.query('TRUNCATE rpde_items');
-    console.log('Cleared table');
+    if (clearExisting) {
+      await pgPool.query('TRUNCATE rpde_items');
+      console.log('Cleared table');
+    }
     const fileNames = await fs.readdir(dirPath);
     fileNames.sort();
     for (const fileName of fileNames) {
@@ -88,5 +94,8 @@ if (require.main === module) {
     process.env.POSTGRES_PASSWORD,
     process.env.POSTGRES_HOST,
     process.env.POSTGRES_DATABASE,
+    {
+      clearExisting: process.env.CLEAR_EXISTING === 'true'
+    }
   );
 }
