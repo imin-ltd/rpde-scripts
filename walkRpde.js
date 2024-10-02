@@ -23,6 +23,16 @@ if (require.main === module) {
   const outputDirPath = path.join(__dirname, process.env.REL_OUTPUT_DIR);
   // Make REL_OUTPUT_DIR if it doesn't exist
   fs.mkdirSync(outputDirPath, { recursive: true });
+
+  // If CLEAR_EXISTING_OUTPUT_DIR is true, delete all existing files in the output directory
+  if (process.env.CLEAR_EXISTING_OUTPUT_DIR === 'true') {
+    console.log(`Clearing existing output directory: ${outputDirPath}`);
+    fs.rmdirSync(outputDirPath, { recursive: true, force: true });
+    fs.mkdirSync(outputDirPath, { recursive: true });
+    console.log(`Created output directory: ${outputDirPath}`);
+  } 
+
+
   // Check on any existing RPDE files and derive the start URL from them if CONTINUE_PREVIOUS_RUN is true
   const fileBaseNames = fs.readdirSync(outputDirPath);
   const { startUrl, startPageNum } = checkExistingRpdeFilesAndGetStartUrlAndPageNum({
