@@ -1,5 +1,9 @@
 # rpde-scripts
 
+ARCHIVED: now moved into [infra-scripts](https://github.com/imin-ltd/infra-scripts)
+
+----
+
 Scripts that can be used to walk and analyse [RPDE feeds](https://openactive.io/realtime-paged-data-exchange/).
 
 ## Set-up
